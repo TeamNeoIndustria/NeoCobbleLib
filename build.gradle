@@ -139,6 +139,18 @@ dependencies {
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+    // Cobblemon
+    implementation files("libs/Cobblemon-neoforge-${cobblemon_version}.jar")
+
+    // EasyNPC
+    implementation files("libs/easy_npc-neoforge-${easynpc_version}.jar")
+
+    // KotlinForForge
+    implementation files("libs/kotlinforforge-${kotlinforforge_version}.jar")
+
+    // TBCS
+    implementation files("libs/tbcs-neoforge-${tbcs_version}.jar")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
