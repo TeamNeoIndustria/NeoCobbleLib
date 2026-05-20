@@ -1,6 +1,5 @@
 package xyz.neonetwork.neocobblelib.commands;
 
-import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -49,10 +48,7 @@ public class MainCommand {
 
         ServerPlayer sender = (ServerPlayer) extract[1];
 
-        Pokemon pokemon = CobblemonUtils.generateRandomPokemon(1, 100);
-        CobblemonUtils.setPlayerPartySlot(sender, 1, pokemon);
-
-        NeoConstants.LOGGER.info(pokemon.toString());
+        CobblemonUtils.setPlayerPartyRandom(sender);
 
         return 1;
     }

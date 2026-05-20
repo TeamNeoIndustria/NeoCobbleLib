@@ -4,7 +4,6 @@ import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.pokemon.Natures;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.storage.party.PartyPosition;
-import com.cobblemon.mod.common.api.storage.player.PlayerInstancedDataStoreType;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Nature;
 import com.cobblemon.mod.common.pokemon.Pokemon;
@@ -13,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.MobSpawnType;
 import xyz.neonetwork.neocobblelib.NeoConstants;
+import xyz.neonetwork.neocobblelib.objects.NPCParty;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -46,5 +46,15 @@ public class CobblemonUtils {
         for (int i = 0; i < 6; i++) {
             Cobblemon.INSTANCE.getStorage().getParty(player).set(new PartyPosition(i), generateRandomPokemon(1, 100));
         }
+    }
+
+    public static NPCParty randomiseNPCParty(NPCParty party, int amount, int lowerLevel, int upperLevel) {
+        party.invalidateParty();
+
+        for (int i = 0; i < amount; i++) {
+            party.addPokemon(generateRandomPokemon(lowerLevel, upperLevel));
+        }
+
+        return party;
     }
 }
