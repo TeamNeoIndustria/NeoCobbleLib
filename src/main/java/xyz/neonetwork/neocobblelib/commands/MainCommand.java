@@ -69,11 +69,12 @@ public class MainCommand {
             return 0;
         }
 
+        NeoConstants.LOGGER.info("Tournament Command");
+
         ServerPlayer sender = (ServerPlayer) extract[1];
         Tournament tournament = TournamentManager.createTournament(sender, TournamentType.RANDOMISED);
 
         tournament.spawnNPC();
-
 
         return 1;
     }
