@@ -8,6 +8,9 @@ import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
 import xyz.neonetwork.neocobblelib.NeoConstants;
 import xyz.neonetwork.neocobblelib.cobblemon.CobblemonUtils;
+import xyz.neonetwork.neocobblelib.objects.Tournament;
+import xyz.neonetwork.neocobblelib.objects.TournamentManager;
+import xyz.neonetwork.neocobblelib.objects.TournamentType;
 
 public class MainCommand {
     public static String commandName = "neocobblelib";
@@ -16,9 +19,15 @@ public class MainCommand {
         dispatcher.register(
                 Commands.literal(commandName)
                         .then(
-                                Commands.literal("test")
+                                Commands.literal("randomparty")
                                         .requires(source -> source.hasPermission(2))
-                                        .executes(MainCommand::testOption)
+                                        .executes(MainCommand::randomPartyOption)
+
+                        )
+                        .then(
+                                Commands.literal("tournament")
+                                        .requires(source -> source.hasPermission(2))
+                                        .executes(MainCommand::tournamentOption)
 
                         )
         );
@@ -39,7 +48,7 @@ public class MainCommand {
         return extraction;
     }
 
-    public static int testOption(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    public static int randomPartyOption(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         Object[] extract = extractContext(context);
 
         if (extract == null) {
@@ -49,6 +58,22 @@ public class MainCommand {
         ServerPlayer sender = (ServerPlayer) extract[1];
 
         CobblemonUtils.setPlayerPartyRandom(sender);
+
+        return 1;
+    }
+
+    public static int tournamentOption(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Object[] extract = extractContext(context);
+
+        if (extract == null) {
+            return 0;
+        }
+
+        ServerPlayer sender = (ServerPlayer) extract[1];
+        Tournament tournament = TournamentManager.createTournament(sender, TournamentType.RANDOMISED);
+
+        tournament.spawnNPC();
+
 
         return 1;
     }
