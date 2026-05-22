@@ -1,4 +1,4 @@
-package xyz.neonetwork.neocobblelib.objects;
+package xyz.neonetwork.neocobblelib.tournament;
 
 public enum TournamentType {
     RANDOMISED,

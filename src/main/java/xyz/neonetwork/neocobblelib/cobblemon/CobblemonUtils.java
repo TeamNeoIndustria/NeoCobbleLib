@@ -12,7 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.MobSpawnType;
 import xyz.neonetwork.neocobblelib.NeoConstants;
-import xyz.neonetwork.neocobblelib.objects.NPCParty;
+import xyz.neonetwork.neocobblelib.tournament.NPCParty;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -20,7 +20,14 @@ public class CobblemonUtils {
 
     public static Pokemon generateRandomPokemon(int lowerLevel, int higherLevel) {
         String species = CobblemonSpecies.getRandomName();
-        int level = ThreadLocalRandom.current().nextInt(lowerLevel, higherLevel);
+        int level;
+
+        if (lowerLevel == higherLevel) {
+            level = lowerLevel;
+        } else {
+            level = ThreadLocalRandom.current().nextInt(lowerLevel, higherLevel);
+        }
+
         Nature nature = Natures.getRandomNature();
         String toParse = String.format("species=%s level=%s nature=%s", species, level, nature.getDisplayName().split("\\.")[2]);
 

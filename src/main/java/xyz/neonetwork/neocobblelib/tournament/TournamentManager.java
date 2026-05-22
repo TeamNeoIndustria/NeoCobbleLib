@@ -1,4 +1,4 @@
-package xyz.neonetwork.neocobblelib.objects;
+package xyz.neonetwork.neocobblelib.tournament;
 
 import net.minecraft.server.level.ServerPlayer;
 
@@ -31,9 +31,23 @@ public class TournamentManager {
         return playerTournaments.get(player.getStringUUID());
     }
 
+    public static void invalidateTournament(ServerPlayer player) {
+        if (!playerTournaments.containsKey(player.getStringUUID())) {
+            return;
+        }
+
+        Tournament tournament = playerTournaments.get(player.getStringUUID());
+
+        tournament.finishBattle();
+        tournament.despawnNPC();
+
+        removeTournament(tournament);
+    }
+
     public static void invalidateTournaments() {
         playerTournaments.forEach((string, tournaments) -> {
             tournaments.finishBattle();
+            tournaments.despawnNPC();
         });
 
         playerTournaments = new HashMap<>();

@@ -1,26 +1,31 @@
-package xyz.neonetwork.neocobblelib.objects;
+package xyz.neonetwork.neocobblelib.tournament;
 
+import com.cobblemon.mod.common.api.storage.party.NPCPartyStore;
 import com.cobblemon.mod.common.api.storage.party.PartyPosition;
+import com.cobblemon.mod.common.api.storage.party.PartyStore;
+import com.cobblemon.mod.common.entity.npc.NPCEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class NPCParty {
 
     private final String uuid;
-    private HashMap<PartyPosition, Pokemon> party;
+    private final String partyUUID;
+    private final HashMap<PartyPosition, Pokemon> party;
     private boolean isDefeated;
 
     public NPCParty() {
         this.uuid = UUID.randomUUID().toString();
+        this.partyUUID = UUID.randomUUID().toString();
         this.party = new HashMap<>();
         this.isDefeated = false;
     }
 
     public NPCParty(HashMap<PartyPosition, Pokemon> party) {
         this.uuid = UUID.randomUUID().toString();
+        this.partyUUID = UUID.randomUUID().toString();
         this.party = party;
         this.isDefeated = false;
     }
@@ -29,8 +34,20 @@ public class NPCParty {
         return uuid;
     }
 
-    public HashMap<PartyPosition, Pokemon> getParty() {
-        return party;
+    public PartyStore getParty() {
+        PartyStore partyStore = new PartyStore(UUID.fromString(this.partyUUID));
+
+        this.party.forEach((partyStore::set));
+
+        return partyStore;
+    }
+
+    public NPCPartyStore getAsNPCPartyStore(NPCEntity entity) {
+        NPCPartyStore npcPartyStore = new NPCPartyStore(entity);
+
+        this.party.forEach(npcPartyStore::set);
+
+        return npcPartyStore;
     }
 
     public Pokemon getPokemon(PartyPosition position) {
@@ -50,20 +67,7 @@ public class NPCParty {
     }
 
     public void removePokemon(Pokemon pokemon) {
-        PartyPosition position = null;
-
-        for (Map.Entry<PartyPosition, Pokemon> entry : this.party.entrySet()) {
-            if (pokemon == entry.getValue()) {
-                position = entry.getKey();
-                break;
-            }
-        }
-
-        if (position == null) {
-            return;
-        }
-
-        removePokemon(position);
+        this.party.remove(pokemon);
     }
 
     public void setDefeated(boolean isDefeated) {
@@ -75,7 +79,7 @@ public class NPCParty {
     }
 
     public void invalidateParty() {
-        this.party = new HashMap<>();
+        this.party.clear();
     }
 
 }
