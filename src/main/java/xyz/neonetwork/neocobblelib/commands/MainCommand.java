@@ -4,12 +4,15 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import xyz.neonetwork.neocobblelib.NeoConstants;
+import xyz.neonetwork.neocobblelib.cobblemon.CobblemonPresetTrainers;
 import xyz.neonetwork.neocobblelib.cobblemon.CobblemonUtils;
+import xyz.neonetwork.neocobblelib.tournament.NPCBattle;
 import xyz.neonetwork.neocobblelib.tournament.Tournament;
 import xyz.neonetwork.neocobblelib.tournament.TournamentManager;
 import xyz.neonetwork.neocobblelib.tournament.TournamentType;
@@ -31,6 +34,13 @@ public class MainCommand {
                                         .requires(source -> source.hasPermission(2))
                                         .then(Commands.argument("option", StringArgumentType.string())
                                         .executes(MainCommand::tournamentOption))
+
+                        )
+                        .then(
+                                Commands.literal("trainer")
+                                        .requires(source -> source.hasPermission(2))
+                                        .then(Commands.argument("option", StringArgumentType.string())
+                                                .executes(MainCommand::trainerOption))
 
                         )
         );
@@ -102,7 +112,26 @@ public class MainCommand {
                 break;
         }
 
+        return 1;
+    }
 
+    public static int trainerOption(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Object[] extract = extractContext(context);
+
+        if (extract == null) {
+            return 0;
+        }
+
+        ServerPlayer sender = (ServerPlayer) extract[1];
+        String option = StringArgumentType.getString(context, "option").toLowerCase();
+        CobblemonPresetTrainers trainer = CobblemonPresetTrainers.fromString(option);
+
+        if (trainer == null) {
+            sender.sendSystemMessage(Component.literal("Invalid Trainer Name").withStyle(ChatFormatting.RED));
+            return 0;
+        }
+
+        NPCBattle npcBattle = new NPCBattle(sender, null, trainer.getParty());
 
         return 1;
     }

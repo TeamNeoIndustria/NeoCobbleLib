@@ -29,7 +29,8 @@ public class NPCBattle {
 
     public void startBattle() {
         result = BattleBuilder.INSTANCE.pvn(this.player, this.entity);
-        result.ifSuccessful((battle) ->{
+
+        result.ifSuccessful((battle) -> {
             NeoConstants.LOGGER.info("Battle Success");
             return null;
         });

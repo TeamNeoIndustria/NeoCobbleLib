@@ -1,21 +1,17 @@
 package xyz.neonetwork.neocobblelib.tournament;
 
-import com.cobblemon.mod.common.api.storage.party.NPCPartyStore;
 import com.cobblemon.mod.common.entity.npc.NPCEntity;
 import de.markusbordihn.easynpc.data.npc.SavedNPCEntityEntry;
-import de.markusbordihn.easynpc.entity.NPCEntityFactory;
 import de.markusbordihn.easynpc.entity.NPCEntityManager;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.OwnerDataCapable;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.TickTask;
+import net.minecraft.ChatFormatting;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.npc.Villager;
 import xyz.neonetwork.neocobblelib.NeoConstants;
 import xyz.neonetwork.neocobblelib.cobblemon.CobblemonUtils;
+import xyz.neonetwork.neocobblelib.utils.NPCUtils;
 
 import java.util.*;
 
@@ -86,30 +82,29 @@ public class Tournament {
         NeoConstants.LOGGER.info("spawnNPC");
 
         ServerLevel level = this.player.serverLevel();
-        Villager villager = new Villager(EntityType.VILLAGER, level);
 
-        villager.moveTo(
-                this.player.getX(),
-                this.player.getY(),
-                this.player.getZ(),
-                this.player.getYRot(),
-                this.player.getXRot()
-        );
+        Entity entity = NPCUtils.createHumanoidNPC(level, "Trainer", ChatFormatting.WHITE, this.player.blockPosition());
 
-        villager.setNoAi(true);
+        if (entity == null) {
+            NeoConstants.LOGGER.error("Error spawning tournament npc for {}", this.player.getDisplayName().getString());
 
-        villager.setCustomName(Component.literal("Trainer"));
-        villager.setCustomNameVisible(true);
-        villager.setInvulnerable(true);
-        villager.setPersistenceRequired();
+            return;
+        }
 
-        level.addFreshEntity(villager);
+        if (entity instanceof EasyNPC<?> easyNPC) {
+            OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
 
-        this.entity = villager;
-        this.npcUUID = villager.getUUID();
+            if (ownerData != null) {
+                ownerData.setNPCOwnerUUID(this.player.getUUID());
+            }
+        }
+
+        this.entity = entity;
+        this.npcUUID = entity.getUUID();
     }
 
     public void despawnNPC() {
+        this.entity.setInvisible(true);
         this.entity.kill();
     }
 
@@ -121,6 +116,7 @@ public class Tournament {
         NPCParty party = npcParties.get(battleCounter);
         NPCEntity npcEntity = new NPCEntity(this.player.serverLevel());
 
+        npcEntity.setUUID(this.npcUUID);
         npcEntity.setParty(party.getAsNPCPartyStore(npcEntity));
 
         NPCBattle battle = new NPCBattle(this.player, npcEntity, party);

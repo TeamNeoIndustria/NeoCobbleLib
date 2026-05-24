@@ -1,25 +1,23 @@
 package xyz.neonetwork.neocobblelib;
 
+import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import xyz.neonetwork.neocobblelib.cobblemon.CobblemonEventListener;
 import xyz.neonetwork.neocobblelib.commands.MainCommand;
 
 @Mod(NeoConstants.MODID)
 public class NeoCobbleLib {
     public NeoCobbleLib(IEventBus modEventBus, ModContainer modContainer) {
-        modEventBus.addListener(this::commonSetup);
-
+        CobblemonEvents.BATTLE_VICTORY.subscribe(CobblemonEventListener::onBattleVictory);
+        CobblemonEvents.BATTLE_FLED.subscribe(CobblemonEventListener::onBattleFled);
         NeoForge.EVENT_BUS.register(this);
     }
 
-    private void commonSetup(FMLCommonSetupEvent event) {
-
-    }
 
     @SubscribeEvent
     public void onCommandRegister(RegisterCommandsEvent event) {

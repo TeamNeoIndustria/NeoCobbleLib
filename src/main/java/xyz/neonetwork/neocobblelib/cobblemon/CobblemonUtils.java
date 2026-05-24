@@ -7,6 +7,7 @@ import com.cobblemon.mod.common.api.storage.party.PartyPosition;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Nature;
 import com.cobblemon.mod.common.pokemon.Pokemon;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,7 +18,6 @@ import xyz.neonetwork.neocobblelib.tournament.NPCParty;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class CobblemonUtils {
-
     public static Pokemon generateRandomPokemon(int lowerLevel, int higherLevel) {
         String species = CobblemonSpecies.getRandomName();
         int level;
@@ -28,8 +28,13 @@ public class CobblemonUtils {
             level = ThreadLocalRandom.current().nextInt(lowerLevel, higherLevel);
         }
 
-        Nature nature = Natures.getRandomNature();
-        String toParse = String.format("species=%s level=%s nature=%s", species, level, nature.getDisplayName().split("\\.")[2]);
+        String toParse = String.format("species=%s level=%s scale=1", species, level);
+
+        return PokemonProperties.Companion.parse(toParse).create();
+    }
+
+    public static Pokemon createPokemon(String name, CobblemonSpecies species, int level) {
+        String toParse = String.format("name=%s species=%s level=%s scale=1", name, species.getName(), level);
 
         return PokemonProperties.Companion.parse(toParse).create();
     }
@@ -63,5 +68,18 @@ public class CobblemonUtils {
         }
 
         return party;
+    }
+
+    public static ChatFormatting getRandomColour() {
+        ChatFormatting[] pokemonColours = new ChatFormatting[] {
+                ChatFormatting.RED,
+                ChatFormatting.BLUE,
+                ChatFormatting.YELLOW,
+                ChatFormatting.GRAY,
+                ChatFormatting.GOLD,
+                ChatFormatting.DARK_PURPLE
+        };
+
+        return pokemonColours[ThreadLocalRandom.current().nextInt(pokemonColours.length)-1];
     }
 }
