@@ -7,8 +7,10 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import xyz.neonetwork.neocobblelib.cobblemon.CobblemonEventListener;
 import xyz.neonetwork.neocobblelib.commands.MainCommand;
+import xyz.neonetwork.neocobblelib.utils.TaskScheduler;
 
 @Mod(NeoConstants.MODID)
 public class NeoCobbleLib {
@@ -16,11 +18,16 @@ public class NeoCobbleLib {
         CobblemonEvents.BATTLE_VICTORY.subscribe(CobblemonEventListener::onBattleVictory);
         CobblemonEvents.BATTLE_FLED.subscribe(CobblemonEventListener::onBattleFled);
         NeoForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.register(TaskScheduler.class);
     }
-
 
     @SubscribeEvent
     public void onCommandRegister(RegisterCommandsEvent event) {
         MainCommand.register(event.getDispatcher());
+    }
+
+    @SubscribeEvent
+    public void onServerStart(ServerStartingEvent event) {
+        NeoConstants.SERVER = event.getServer();
     }
 }

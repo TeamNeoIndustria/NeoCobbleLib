@@ -12,10 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import xyz.neonetwork.neocobblelib.NeoConstants;
 import xyz.neonetwork.neocobblelib.cobblemon.CobblemonPresetTrainers;
 import xyz.neonetwork.neocobblelib.cobblemon.CobblemonUtils;
-import xyz.neonetwork.neocobblelib.tournament.NPCBattle;
-import xyz.neonetwork.neocobblelib.tournament.Tournament;
-import xyz.neonetwork.neocobblelib.tournament.TournamentManager;
-import xyz.neonetwork.neocobblelib.tournament.TournamentType;
+import xyz.neonetwork.neocobblelib.tournament.*;
 
 public class MainCommand {
     public static String commandName = "neocobblelib";
@@ -131,7 +128,9 @@ public class MainCommand {
             return 0;
         }
 
-        NPCBattle npcBattle = new NPCBattle(sender, null, trainer.getParty());
+        NPCBattle battle = BattleManager.createBattle(sender, trainer.getParty());
+
+        battle.startBattle();
 
         return 1;
     }
