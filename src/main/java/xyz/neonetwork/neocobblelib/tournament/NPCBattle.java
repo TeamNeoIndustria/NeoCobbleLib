@@ -54,36 +54,26 @@ public class NPCBattle {
 
         PlayerPartyStore playerPartyStore = Cobblemon.INSTANCE.getStorage().getParty(this.player);
 
-        playerPartyStore.forEach(pokemon -> {
-            playerParty.add(BattlePokemon.Companion.playerOwned(pokemon));
-        });
-
-        PlayerBattleActor playerActor = new PlayerBattleActor(this.player.getUUID(), playerParty);
-        NPCBattleActor npcBattleActor = new NPCBattleActor(this.entity, this.npcParty.getParty(), 5);
+        playerPartyStore.forEach(pokemon -> playerParty.add(BattlePokemon.Companion.playerOwned(pokemon)));
 
         TaskScheduler.nextTickTask(() -> {
             playerPartyStore.toGappyList().stream()
                     .filter(Objects::nonNull)
                     .forEach(Pokemon::recall);
 
-            BattleSide trainerSide = new BattleSide(npcBattleActor);
-            BattleSide playerSide = new BattleSide(playerActor);
-
             try {
                 playerParty.getFirst().getEffectedPokemon().sendOut(this.player.serverLevel(), this.player.getPosition(0), null, pokemonEntity -> Unit.INSTANCE);
-                npcBattleActor.getPokemonList().getFirst().getEffectedPokemon().sendOut(this.player.serverLevel(), this.player.getPosition(0), null, pokemonEntity -> Unit.INSTANCE);
+
+                NPCBattleActor npcBattleActor = new NPCBattleActor(this.entity, this.npcParty.getParty(), 5);
+
+                npcBattleActor.getPokemonList().getFirst().getEffectedPokemon().sendOut(this.player.serverLevel(), this.entity.position(), null, pokemonEntity -> Unit.INSTANCE);
             } catch (Exception exception) {
-                NeoConstants.LOGGER.error("Error sending out battle pokemon.");
-                exception.printStackTrace();
+                NeoConstants.LOGGER.error("Error sending out battle Pokemon. {}", exception.getMessage());
                 return;
             }
 
-            result = BattleRegistry.startBattle(BattleFormat.Companion.getGEN_9_SINGLES(), playerSide, trainerSide, false);
+            result = BattleBuilder.INSTANCE.pvn(this.player, this.entity);
 
-            result.ifSuccessful((battle) -> {
-                NeoConstants.LOGGER.info("Battle Success");
-                return null;
-            });
             result.ifErrored(erroredBattleStart -> {
                 NeoConstants.LOGGER.error("Battle Failed");
                 erroredBattleStart.getErrors().forEach(battleStartError -> {
@@ -91,23 +81,14 @@ public class NPCBattle {
                 });
                 return null;
             });
+
+
         });
 
     }
 
     public void finishBattle() {
-        result.ifSuccessful((battle) -> {
-            battle.getWinners().forEach(actor -> {
-                if (!actor.isForPlayer(this.player)) {
-                    NeoConstants.LOGGER.info("Player Loses");
-                    return;
-                }
 
-                NeoConstants.LOGGER.info("Player Wins");
-                // Player Wins
-            });
-            return null;
-        });
     }
 
 }

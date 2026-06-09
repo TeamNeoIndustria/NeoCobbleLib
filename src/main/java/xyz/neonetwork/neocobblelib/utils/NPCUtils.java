@@ -1,5 +1,8 @@
 package xyz.neonetwork.neocobblelib.utils;
 
+import com.cobblemon.mod.common.api.npc.NPCClass;
+import com.cobblemon.mod.common.api.npc.NPCClasses;
+import com.cobblemon.mod.common.entity.npc.NPCEntity;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
 import net.minecraft.ChatFormatting;
@@ -11,6 +14,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import xyz.neonetwork.neocobblelib.NeoConstants;
 import xyz.neonetwork.neocobblelib.cobblemon.CobblemonPresetTrainers;
+import xyz.neonetwork.neocobblelib.tournament.NPCBattle;
 
 public class NPCUtils {
 
@@ -41,30 +45,30 @@ public class NPCUtils {
         return entity;
     }
 
-    public static Entity createTrainer(ServerLevel level, CobblemonPresetTrainers trainer, BlockPos position) {
-        EntityType<?> type = ModEntityType.NPC_TYPE.get(ModNPCEntityType.HUMANOID).get();
-        Entity entity = type.spawn(
-                level,
-                null,
-                null,
-                position,
-                MobSpawnType.COMMAND,
-                true,
-                false
-        );
+    public static NPCEntity createNPC(ServerLevel level, BlockPos position) {
+        NPCEntity npcEntity = new NPCEntity(level);
 
+        npcEntity.setNpc(NPCClasses.INSTANCE.getByName("standard"));
+        npcEntity.finalizeSpawn(level, level.getCurrentDifficultyAt(position), MobSpawnType.COMMAND, null);
+        npcEntity.teleportTo(level, position.getX(), position.getY(), position.getY(), null, 0, 0);
+        npcEntity.setCustomName(Component.literal("Trainer"));
 
-        if (entity == null) {
-            NeoConstants.LOGGER.error("Error spawning trainer.");
+        NeoConstants.SERVER.getPlayerList().getPlayers().forEach(players -> players.level().addFreshEntity(npcEntity));
 
-            return null;
-        }
+        return npcEntity;
+    }
 
-        entity.setCustomName(Component.literal(trainer.getName()).withStyle(trainer.getNameColour()));
-        entity.moveTo(position.getX(), position.getY(), position.getZ());
+    public static NPCEntity createTrainer(ServerLevel level, CobblemonPresetTrainers trainer, BlockPos position) {
+        NPCEntity npcEntity = new NPCEntity(level);
 
-        level.addFreshEntity(entity);
+        npcEntity.setNpc(NPCClasses.INSTANCE.getByName("standard"));
+        npcEntity.finalizeSpawn(level, level.getCurrentDifficultyAt(position), MobSpawnType.COMMAND, null);
+        npcEntity.teleportTo(level, position.getX(), position.getY(), position.getZ(), null, 0, 0);
+        npcEntity.setParty(trainer.getParty().getAsNPCPartyStore(npcEntity));
+        npcEntity.setCustomName(Component.literal(trainer.getName()).withStyle(trainer.getNameColour()));
 
-        return entity;
+        NeoConstants.SERVER.getPlayerList().getPlayers().forEach(players -> players.level().addFreshEntity(npcEntity));
+
+        return npcEntity;
     }
 }

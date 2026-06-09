@@ -13,6 +13,7 @@ import xyz.neonetwork.neocobblelib.NeoConstants;
 import xyz.neonetwork.neocobblelib.cobblemon.CobblemonPresetTrainers;
 import xyz.neonetwork.neocobblelib.cobblemon.CobblemonUtils;
 import xyz.neonetwork.neocobblelib.tournament.*;
+import xyz.neonetwork.neocobblelib.utils.BattleUtils;
 
 public class MainCommand {
     public static String commandName = "neocobblelib";
@@ -128,7 +129,7 @@ public class MainCommand {
             return 0;
         }
 
-        NPCBattle battle = BattleManager.createBattle(sender, trainer.getParty());
+        NPCBattle battle = BattleUtils.createBattleWithTrainer(sender, trainer);
 
         battle.startBattle();
 

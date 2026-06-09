@@ -3,16 +3,29 @@ package xyz.neonetwork.neocobblelib.cobblemon;
 import com.cobblemon.mod.common.api.events.battles.BattleFledEvent;
 import com.cobblemon.mod.common.api.events.battles.BattleVictoryEvent;
 import xyz.neonetwork.neocobblelib.NeoConstants;
-import xyz.neonetwork.neocobblelib.tournament.BattleManager;
+import xyz.neonetwork.neocobblelib.tournament.Tournament;
+import xyz.neonetwork.neocobblelib.tournament.TournamentManager;
 
 public class CobblemonEventListener {
     public static void onBattleVictory(BattleVictoryEvent event) {
         NeoConstants.LOGGER.info("Victory Called");
 
         event.getBattle().getPlayers().forEach((player -> {
-            if (BattleManager.inBattle(player)) {
-                NeoConstants.LOGGER.info("{}'s victory", player.getDisplayName().getString());
-                BattleManager.removeBattle(BattleManager.getBattle(player));
+            if (!event.getWinners().getFirst().getUuid().equals(player.getUUID())) {
+                return;
+            }
+
+            NeoConstants.LOGGER.info("{}'s Battle", player.getDisplayName().getString());
+
+            if (TournamentManager.inTournament(player)) {
+                Tournament tournament = TournamentManager.getTournament(player);
+
+                tournament.finishBattle();
+
+                // Temp
+                tournament.despawnNPC();
+
+                TournamentManager.invalidateTournament(player);
             }
         }));
     }
@@ -21,9 +34,17 @@ public class CobblemonEventListener {
         NeoConstants.LOGGER.info("Fled Called");
 
         event.getBattle().getPlayers().forEach((player -> {
-            NeoConstants.LOGGER.info("{}'s flee", player.getDisplayName().getString());
-            if (BattleManager.inBattle(player)) {
-                BattleManager.removeBattle(BattleManager.getBattle(player));
+            NeoConstants.LOGGER.info("{}'s Flee", player.getDisplayName().getString());
+
+            if (TournamentManager.inTournament(player)) {
+                Tournament tournament = TournamentManager.getTournament(player);
+
+                tournament.finishBattle();
+
+                // Temp
+                tournament.despawnNPC();
+
+                TournamentManager.invalidateTournament(player);
             }
         }));
     }

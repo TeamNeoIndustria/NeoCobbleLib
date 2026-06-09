@@ -19,7 +19,7 @@ public class Tournament {
 
     private final ServerPlayer player;
     private UUID npcUUID;
-    private Entity entity;
+    private NPCEntity entity;
     private final List<NPCParty> npcParties;
     private final TournamentType type;
     private int battleCounter;
@@ -49,8 +49,8 @@ public class Tournament {
         return type;
     }
 
-    public Optional<SavedNPCEntityEntry> getNPC() {
-        return NPCEntityManager.getNPC(this.npcUUID);
+    public NPCEntity getNPC() {
+        return entity;
     }
 
     public void addNPCParty(NPCParty party) {
@@ -79,27 +79,7 @@ public class Tournament {
     }
 
     public void spawnNPC() {
-        NeoConstants.LOGGER.info("spawnNPC");
-
-        ServerLevel level = this.player.serverLevel();
-
-        Entity entity = NPCUtils.createHumanoidNPC(level, "Trainer", ChatFormatting.WHITE, this.player.blockPosition());
-
-        if (entity == null) {
-            NeoConstants.LOGGER.error("Error spawning tournament npc for {}", this.player.getDisplayName().getString());
-
-            return;
-        }
-
-        if (entity instanceof EasyNPC<?> easyNPC) {
-            OwnerDataCapable<?> ownerData = easyNPC.getEasyNPCOwnerData();
-
-            if (ownerData != null) {
-                ownerData.setNPCOwnerUUID(this.player.getUUID());
-            }
-        }
-
-        this.entity = entity;
+        entity = NPCUtils.createNPC(this.player.serverLevel(), this.player.blockPosition());
         this.npcUUID = entity.getUUID();
     }
 
@@ -114,12 +94,10 @@ public class Tournament {
         }
 
         NPCParty party = npcParties.get(battleCounter);
-        NPCEntity npcEntity = new NPCEntity(this.player.serverLevel());
 
-        npcEntity.setUUID(this.npcUUID);
-        npcEntity.setParty(party.getAsNPCPartyStore(npcEntity));
+        entity.setParty(party.getAsNPCPartyStore(entity));
 
-        NPCBattle battle = new NPCBattle(this.player, npcEntity, party);
+        NPCBattle battle = new NPCBattle(this.player, entity, party);
 
         // Start fight
         battle.startBattle();
@@ -127,5 +105,7 @@ public class Tournament {
 
     public void finishBattle() {
         this.battleCounter++;
+
+        // Do next battle
     }
 }
