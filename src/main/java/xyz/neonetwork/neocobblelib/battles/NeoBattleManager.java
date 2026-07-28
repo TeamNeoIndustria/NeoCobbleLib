@@ -79,11 +79,9 @@ public class NeoBattleManager {
     }
 
     public static void finialiseBattle(ServerPlayer player) {
-        NeoConstants.LOGGER.info("Called finaliseBattle");
         NeoBattle battle = getBattle(player);
 
         if (battle == null) {
-            NeoConstants.LOGGER.info("No battle found");
             return;
         }
 

@@ -1,13 +1,17 @@
 package xyz.neonetwork.neocobblelib;
 
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
+import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import xyz.neonetwork.neocobblelib.battles.NeoBattle;
+import xyz.neonetwork.neocobblelib.battles.NeoBattleManager;
 import xyz.neonetwork.neocobblelib.cobblemon.CobblemonEventListener;
 import xyz.neonetwork.neocobblelib.commands.MainCommand;
 import xyz.neonetwork.neocobblelib.utils.TaskScheduler;
@@ -29,5 +33,12 @@ public class NeoCobbleLib {
     @SubscribeEvent
     public void onServerStart(ServerStartingEvent event) {
         NeoConstants.SERVER = event.getServer();
+    }
+
+    @SubscribeEvent
+    public void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
+        ServerPlayer player = (ServerPlayer) event.getEntity();
+
+        NeoBattleManager.finialiseBattle(player);
     }
 }
