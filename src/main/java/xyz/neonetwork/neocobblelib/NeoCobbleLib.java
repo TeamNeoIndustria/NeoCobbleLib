@@ -13,7 +13,9 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import xyz.neonetwork.neocobblelib.battles.NeoBattle;
 import xyz.neonetwork.neocobblelib.battles.NeoBattleManager;
 import xyz.neonetwork.neocobblelib.cobblemon.CobblemonEventListener;
+import xyz.neonetwork.neocobblelib.cobblemon.CobblemonTrainerManager;
 import xyz.neonetwork.neocobblelib.commands.MainCommand;
+import xyz.neonetwork.neocobblelib.utils.ConfigFile;
 import xyz.neonetwork.neocobblelib.utils.TaskScheduler;
 
 @Mod(NeoConstants.MODID)
@@ -23,6 +25,9 @@ public class NeoCobbleLib {
         CobblemonEvents.BATTLE_FLED.subscribe(CobblemonEventListener::onBattleFled);
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.register(TaskScheduler.class);
+
+        NeoConstants.TRAINER_CONFIG = new ConfigFile("trainers");
+        NeoConstants.TRAINER_CONFIG.loadConfig();
     }
 
     @SubscribeEvent
@@ -33,6 +38,8 @@ public class NeoCobbleLib {
     @SubscribeEvent
     public void onServerStart(ServerStartingEvent event) {
         NeoConstants.SERVER = event.getServer();
+
+        CobblemonTrainerManager.loadTrainers();
     }
 
     @SubscribeEvent
