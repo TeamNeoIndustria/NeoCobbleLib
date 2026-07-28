@@ -1,4 +1,4 @@
-package xyz.neonetwork.neocobblelib.tournament;
+package xyz.neonetwork.neocobblelib.battles;
 
 import com.cobblemon.mod.common.api.storage.party.NPCPartyStore;
 import com.cobblemon.mod.common.api.storage.party.PartyPosition;
@@ -9,21 +9,21 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class NPCParty {
+public class NeoNPCParty {
 
     private final String uuid;
     private final String partyUUID;
     private final HashMap<PartyPosition, Pokemon> party;
     private boolean isDefeated;
 
-    public NPCParty() {
+    public NeoNPCParty() {
         this.uuid = UUID.randomUUID().toString();
         this.partyUUID = UUID.randomUUID().toString();
         this.party = new HashMap<>();
         this.isDefeated = false;
     }
 
-    public NPCParty(HashMap<PartyPosition, Pokemon> party) {
+    public NeoNPCParty(HashMap<PartyPosition, Pokemon> party) {
         this.uuid = UUID.randomUUID().toString();
         this.partyUUID = UUID.randomUUID().toString();
         this.party = party;

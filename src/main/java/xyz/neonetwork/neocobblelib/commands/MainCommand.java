@@ -12,7 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import xyz.neonetwork.neocobblelib.NeoConstants;
 import xyz.neonetwork.neocobblelib.cobblemon.CobblemonPresetTrainers;
 import xyz.neonetwork.neocobblelib.cobblemon.CobblemonUtils;
-import xyz.neonetwork.neocobblelib.tournament.*;
+import xyz.neonetwork.neocobblelib.battles.*;
 import xyz.neonetwork.neocobblelib.utils.BattleUtils;
 
 public class MainCommand {
@@ -25,13 +25,6 @@ public class MainCommand {
                                 Commands.literal("randomparty")
                                         .requires(source -> source.hasPermission(2))
                                         .executes(MainCommand::randomPartyOption)
-
-                        )
-                        .then(
-                                Commands.literal("tournament")
-                                        .requires(source -> source.hasPermission(2))
-                                        .then(Commands.argument("option", StringArgumentType.string())
-                                        .executes(MainCommand::tournamentOption))
 
                         )
                         .then(
@@ -73,46 +66,6 @@ public class MainCommand {
         return 1;
     }
 
-    public static int tournamentOption(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        Object[] extract = extractContext(context);
-
-        if (extract == null) {
-            return 0;
-        }
-
-        NeoConstants.LOGGER.info("Tournament Command");
-
-        ServerPlayer sender = (ServerPlayer) extract[1];
-        String option = StringArgumentType.getString(context, "option").toLowerCase();
-        Tournament tournament;
-
-        switch (option) {
-            case "create":
-                tournament = TournamentManager.createTournament(sender, TournamentType.RANDOMISED);
-                tournament.spawnNPC();
-
-                sender.sendSystemMessage(Component.literal("Created Tournament"));
-                break;
-            case "start":
-                tournament = TournamentManager.getTournament(sender);
-
-                if (tournament == null) {
-                    sender.sendSystemMessage(Component.literal("You're not in a tournament."));
-                    break;
-                }
-
-                tournament.startBattle();
-                sender.sendSystemMessage(Component.literal("Starting Tournament"));
-                break;
-            case "stop":
-                TournamentManager.invalidateTournament(sender);
-                sender.sendSystemMessage(Component.literal("Invalidated Tournament"));
-                break;
-        }
-
-        return 1;
-    }
-
     public static int trainerOption(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         Object[] extract = extractContext(context);
 
@@ -129,7 +82,7 @@ public class MainCommand {
             return 0;
         }
 
-        NPCBattle battle = BattleUtils.createBattleWithTrainer(sender, trainer);
+        NeoBattle battle = BattleUtils.createBattleWithTrainer(sender, trainer);
 
         battle.startBattle();
 

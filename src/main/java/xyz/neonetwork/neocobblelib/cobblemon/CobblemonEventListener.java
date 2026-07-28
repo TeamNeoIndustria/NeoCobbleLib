@@ -3,8 +3,7 @@ package xyz.neonetwork.neocobblelib.cobblemon;
 import com.cobblemon.mod.common.api.events.battles.BattleFledEvent;
 import com.cobblemon.mod.common.api.events.battles.BattleVictoryEvent;
 import xyz.neonetwork.neocobblelib.NeoConstants;
-import xyz.neonetwork.neocobblelib.tournament.Tournament;
-import xyz.neonetwork.neocobblelib.tournament.TournamentManager;
+import xyz.neonetwork.neocobblelib.battles.NeoBattleManager;
 
 public class CobblemonEventListener {
     public static void onBattleVictory(BattleVictoryEvent event) {
@@ -16,17 +15,7 @@ public class CobblemonEventListener {
             }
 
             NeoConstants.LOGGER.info("{}'s Battle", player.getDisplayName().getString());
-
-            if (TournamentManager.inTournament(player)) {
-                Tournament tournament = TournamentManager.getTournament(player);
-
-                tournament.finishBattle();
-
-                // Temp
-                tournament.despawnNPC();
-
-                TournamentManager.invalidateTournament(player);
-            }
+            NeoBattleManager.finialiseBattle(player);
         }));
     }
 
@@ -35,17 +24,7 @@ public class CobblemonEventListener {
 
         event.getBattle().getPlayers().forEach((player -> {
             NeoConstants.LOGGER.info("{}'s Flee", player.getDisplayName().getString());
-
-            if (TournamentManager.inTournament(player)) {
-                Tournament tournament = TournamentManager.getTournament(player);
-
-                tournament.finishBattle();
-
-                // Temp
-                tournament.despawnNPC();
-
-                TournamentManager.invalidateTournament(player);
-            }
+            NeoBattleManager.finialiseBattle(player);
         }));
     }
 }

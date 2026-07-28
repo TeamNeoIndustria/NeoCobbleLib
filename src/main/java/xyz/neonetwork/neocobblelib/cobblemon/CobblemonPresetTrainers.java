@@ -2,7 +2,7 @@ package xyz.neonetwork.neocobblelib.cobblemon;
 
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import net.minecraft.ChatFormatting;
-import xyz.neonetwork.neocobblelib.tournament.NPCParty;
+import xyz.neonetwork.neocobblelib.battles.NeoNPCParty;
 
 public enum CobblemonPresetTrainers {
 
@@ -17,12 +17,12 @@ public enum CobblemonPresetTrainers {
 
     private final String name;
     private final ChatFormatting nameColour;
-    private final NPCParty party;
+    private final NeoNPCParty party;
 
     CobblemonPresetTrainers(String name, ChatFormatting nameColour, Pokemon... party) {
         this.name = name;
         this.nameColour = nameColour;
-        NPCParty npcParty = new NPCParty();
+        NeoNPCParty npcParty = new NeoNPCParty();
 
         for (Pokemon pokemon : party) {
             npcParty.addPokemon(pokemon);
@@ -39,7 +39,7 @@ public enum CobblemonPresetTrainers {
         return nameColour;
     }
 
-    public NPCParty getParty() {
+    public NeoNPCParty getParty() {
         return party;
     }
 

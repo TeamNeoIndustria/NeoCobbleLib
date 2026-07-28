@@ -1,6 +1,5 @@
 package xyz.neonetwork.neocobblelib.utils;
 
-import com.cobblemon.mod.common.api.npc.NPCClass;
 import com.cobblemon.mod.common.api.npc.NPCClasses;
 import com.cobblemon.mod.common.entity.npc.NPCEntity;
 import de.markusbordihn.easynpc.entity.ModEntityType;
@@ -14,7 +13,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import xyz.neonetwork.neocobblelib.NeoConstants;
 import xyz.neonetwork.neocobblelib.cobblemon.CobblemonPresetTrainers;
-import xyz.neonetwork.neocobblelib.tournament.NPCBattle;
 
 public class NPCUtils {
 
