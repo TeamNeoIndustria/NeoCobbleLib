@@ -8,8 +8,11 @@ import com.cobblemon.mod.common.entity.npc.NPCBattleActor;
 import com.cobblemon.mod.common.entity.npc.NPCEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import kotlin.Unit;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import xyz.neonetwork.neocobblelib.NeoConstants;
+import xyz.neonetwork.neocobblelib.cobblemon.CobblemonUtils;
 import xyz.neonetwork.neocobblelib.utils.BattleUtils;
 import xyz.neonetwork.neocobblelib.utils.NPCUtils;
 import xyz.neonetwork.neocobblelib.utils.TaskScheduler;
@@ -35,6 +38,8 @@ public class NeoBattle {
     public NeoBattle(ServerPlayer player, NeoBattleType type) {
         this.playerOne = player;
         this.type = type;
+
+        NeoBattleManager.addBattle(player, this);
     }
 
     public ServerPlayer getStartingPlayer() {
@@ -55,6 +60,14 @@ public class NeoBattle {
 
     public NeoBattleType getType() {
         return type;
+    }
+
+    public void setEntity(NPCEntity entity) {
+        this.entity = entity;
+    }
+
+    public void setNpcParty(NeoNPCParty npcParty) {
+        this.npcParty = npcParty;
     }
 
     public void setPlayerTwo(ServerPlayer player) {
@@ -117,12 +130,38 @@ public class NeoBattle {
 
                 // NPC
                 try {
-                    this.entity = NPCUtils.createNPC(this.playerOne.serverLevel(), this.playerOne.blockPosition());
+                    if (this.entity == null) {
+                        this.entity = NPCUtils.createNPC(this.playerOne.serverLevel(), this.playerOne.blockPosition());
+                    }
+
                     NPCBattleActor npcBattleActor = new NPCBattleActor(this.entity, this.npcParty.getParty(), 5);
 
                     npcBattleActor.getPokemonList().getFirst().getEffectedPokemon().sendOut(this.playerOne.serverLevel(), this.entity.position(), null, pokemonEntity -> Unit.INSTANCE);
                 } catch (Exception exception) {
                     NeoConstants.LOGGER.error("Error sending out Trainer's Pokemon in PvT.");
+
+                    exception.printStackTrace();
+                }
+            }
+            case NPC_RANDOM -> {
+                // Player 1
+                if (!sendOutPlayerPokemon(this.playerOne)) {
+                    NeoConstants.LOGGER.error("Error sending out Player One's [{}] Pokemon in PvR.", this.playerOne.getDisplayName().getString());
+
+                    return false;
+                }
+
+                try {
+                    if (this.entity == null) {
+                        this.entity = NPCUtils.createNPC(this.playerOne.serverLevel(), this.playerOne.blockPosition());
+                        this.entity.setCustomName(Component.literal("Randomizer").withStyle(ChatFormatting.GOLD));
+                    }
+
+                    NPCBattleActor npcBattleActor = new NPCBattleActor(this.entity, this.npcParty.getParty(), 5);
+
+                    npcBattleActor.getPokemonList().getFirst().getEffectedPokemon().sendOut(this.playerOne.serverLevel(), this.entity.position(), null, pokemonEntity -> Unit.INSTANCE);
+                } catch (Exception exception) {
+                    NeoConstants.LOGGER.error("Error sending out Trainer's Pokemon in PvR.");
 
                     exception.printStackTrace();
                 }
@@ -159,6 +198,7 @@ public class NeoBattle {
 
     public void finishBattle() {
         // Called from EventListener
+        NeoConstants.LOGGER.info("Called finishBattle");
         this.entity.kill();
 
         // Give rewards?

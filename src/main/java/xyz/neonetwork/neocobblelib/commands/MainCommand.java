@@ -24,7 +24,7 @@ public class MainCommand {
                         .then(
                                 Commands.literal("randomparty")
                                         .requires(source -> source.hasPermission(2))
-                                        .executes(MainCommand::randomPartyOption)
+                                                .executes(MainCommand::randomPartyOption)
 
                         )
                         .then(
@@ -34,6 +34,10 @@ public class MainCommand {
                                                 .executes(MainCommand::trainerOption))
 
                         )
+                        .then(
+                                Commands.literal("randomtrainer")
+                                        .requires(source -> source.hasPermission(2))
+                                                .executes(MainCommand::randomTrainerOption))
         );
     }
 
@@ -83,6 +87,21 @@ public class MainCommand {
         }
 
         NeoBattle battle = BattleUtils.createBattleWithTrainer(sender, trainer);
+
+        battle.startBattle();
+
+        return 1;
+    }
+
+    public static int randomTrainerOption(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Object[] extract = extractContext(context);
+
+        if (extract == null) {
+            return 0;
+        }
+
+        ServerPlayer sender = (ServerPlayer) extract[1];
+        NeoBattle battle = BattleUtils.createBattleWithRandom(sender);
 
         battle.startBattle();
 

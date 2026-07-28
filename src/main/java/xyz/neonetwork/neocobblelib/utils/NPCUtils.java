@@ -1,6 +1,7 @@
 package xyz.neonetwork.neocobblelib.utils;
 
 import com.cobblemon.mod.common.api.npc.NPCClasses;
+import com.cobblemon.mod.common.api.storage.party.NPCPartyStore;
 import com.cobblemon.mod.common.entity.npc.NPCEntity;
 import de.markusbordihn.easynpc.entity.ModEntityType;
 import de.markusbordihn.easynpc.entity.ModNPCEntityType;
@@ -68,5 +69,20 @@ public class NPCUtils {
         NeoConstants.SERVER.getPlayerList().getPlayers().forEach(players -> players.level().addFreshEntity(npcEntity));
 
         return npcEntity;
+    }
+
+    public static NPCEntity createTrainerDelay(ServerLevel level, BlockPos position) {
+        NPCEntity npcEntity = new NPCEntity(level);
+
+        npcEntity.setNpc(NPCClasses.INSTANCE.getByName("standard"));
+        npcEntity.finalizeSpawn(level, level.getCurrentDifficultyAt(position), MobSpawnType.COMMAND, null);
+        npcEntity.teleportTo(level, position.getX(), position.getY(), position.getZ(), null, 0, 0);
+        npcEntity.setCustomName(Component.literal("Randomizer!").withStyle(ChatFormatting.GOLD));
+
+        return npcEntity;
+    }
+
+    public static void sendNPCToClient(NPCEntity entity) {
+        NeoConstants.SERVER.getPlayerList().getPlayers().forEach(players -> players.level().addFreshEntity(entity));
     }
 }

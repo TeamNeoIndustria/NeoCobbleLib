@@ -10,11 +10,8 @@ public class CobblemonEventListener {
         NeoConstants.LOGGER.info("Victory Called");
 
         event.getBattle().getPlayers().forEach((player -> {
-            if (!event.getWinners().getFirst().getUuid().equals(player.getUUID())) {
-                return;
-            }
-
             NeoConstants.LOGGER.info("{}'s Battle", player.getDisplayName().getString());
+
             NeoBattleManager.finialiseBattle(player);
         }));
     }
