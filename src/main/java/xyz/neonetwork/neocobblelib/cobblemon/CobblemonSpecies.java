@@ -1043,4 +1043,14 @@ public enum CobblemonSpecies {
     public static String getRandomName() {
         return values()[ThreadLocalRandom.current().nextInt(values().length-1)].getName();
     }
+
+    public static CobblemonSpecies fromString(String name) {
+        for (CobblemonSpecies species : values()) {
+            if (species.getName().equalsIgnoreCase(name)) {
+                return species;
+            }
+        }
+
+        return null;
+    }
 }

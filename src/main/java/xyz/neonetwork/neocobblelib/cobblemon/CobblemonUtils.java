@@ -1,11 +1,9 @@
 package xyz.neonetwork.neocobblelib.cobblemon;
 
 import com.cobblemon.mod.common.Cobblemon;
-import com.cobblemon.mod.common.api.pokemon.Natures;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.storage.party.PartyPosition;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
-import com.cobblemon.mod.common.pokemon.Nature;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -13,7 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.MobSpawnType;
 import xyz.neonetwork.neocobblelib.NeoConstants;
-import xyz.neonetwork.neocobblelib.tournament.NPCParty;
+import xyz.neonetwork.neocobblelib.battles.NeoNPCParty;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -60,7 +58,7 @@ public class CobblemonUtils {
         }
     }
 
-    public static NPCParty randomiseNPCParty(NPCParty party, int amount, int lowerLevel, int upperLevel) {
+    public static NeoNPCParty randomiseNPCParty(NeoNPCParty party, int amount, int lowerLevel, int upperLevel) {
         party.invalidateParty();
 
         for (int i = 0; i < amount; i++) {

@@ -2,20 +2,66 @@ package xyz.neonetwork.neocobblelib.utils;
 
 import com.cobblemon.mod.common.entity.npc.NPCEntity;
 import net.minecraft.server.level.ServerPlayer;
+import xyz.neonetwork.neocobblelib.NeoConstants;
+import xyz.neonetwork.neocobblelib.battles.NeoBattleType;
 import xyz.neonetwork.neocobblelib.cobblemon.CobblemonPresetTrainers;
-import xyz.neonetwork.neocobblelib.tournament.NPCBattle;
-import xyz.neonetwork.neocobblelib.tournament.NPCParty;
+import xyz.neonetwork.neocobblelib.battles.NeoBattle;
+import xyz.neonetwork.neocobblelib.battles.NeoNPCParty;
+import xyz.neonetwork.neocobblelib.cobblemon.CobblemonUtils;
+
+import java.util.UUID;
 
 public class BattleUtils {
-    public static NPCBattle createBattle(ServerPlayer player, NPCParty party) {
-        NPCEntity npcEntity = NPCUtils.createNPC(player.serverLevel(), player.blockPosition());
-        npcEntity.setParty(party.getAsNPCPartyStore(npcEntity));
+    public static NeoBattle createNPCBattle(ServerPlayer player, NeoNPCParty party) {
+        NeoBattle neoBattle = new NeoBattle(player, NeoBattleType.NPC);
 
-        return new NPCBattle(player, npcEntity, party);
+        neoBattle.setNpcParty(party);
+
+        return neoBattle;
     }
 
-    public static NPCBattle createBattleWithTrainer(ServerPlayer player, CobblemonPresetTrainers trainer) {
-        return new NPCBattle(player, NPCUtils.createTrainer(player.serverLevel(), trainer, player.blockPosition()), trainer.getParty());
+    public static NeoBattle createBattleWithTrainer(ServerPlayer player, CobblemonPresetTrainers trainer) {
+        NeoBattle neoBattle = new NeoBattle(player, NeoBattleType.NPC);
+        NPCEntity entity = NPCUtils.createTrainer(player.serverLevel(), trainer, player.blockPosition());
+
+        neoBattle.setEntity(entity);
+        neoBattle.setNpcParty(trainer.getParty());
+
+        return neoBattle;
+    }
+
+    public static NeoBattle createBattleWithRandom(ServerPlayer player) {
+        NeoBattle neoBattle = new NeoBattle(player, NeoBattleType.NPC_RANDOM);
+        NeoNPCParty npcParty = CobblemonUtils.randomiseNPCParty(new NeoNPCParty(), 3, 50, 50);
+        NPCEntity entity = NPCUtils.createTrainerDelay(player.serverLevel(), player.blockPosition());
+
+        entity.setParty(npcParty.getAsNPCPartyStore(entity));
+
+        NPCUtils.sendNPCToClient(entity);
+
+        neoBattle.setEntity(entity);
+        neoBattle.setNpcParty(npcParty);
+
+        return neoBattle;
+
+    }
+
+    public static NeoBattle createBattlePlayerVPlayer(ServerPlayer playerOne, ServerPlayer playerTwo) {
+        NeoBattle neoBattle = new NeoBattle(playerOne, NeoBattleType.PLAYER_V_PLAYER);
+
+        neoBattle.setPlayerTwo(playerTwo);
+
+        return neoBattle;
+    }
+
+    public static boolean isUUIDPlayer(UUID uuid) {
+        for (ServerPlayer player : NeoConstants.SERVER.getPlayerList().getPlayers()) {
+            if (uuid.equals(player.getUUID())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
