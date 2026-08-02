@@ -23,7 +23,6 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class NeoBattle {
-
     // Entities
     private final ServerPlayer playerOne;
     private ServerPlayer playerTwo;
@@ -188,7 +187,9 @@ public class NeoBattle {
                     NeoConstants.LOGGER.error(battleStartError.toString());
                 });
 
-                this.entity.kill();
+                if (!type.equals(NeoBattleType.PLAYER_V_PLAYER)) {
+                    this.entity.kill();
+                }
 
                 return null;
             });
@@ -197,11 +198,8 @@ public class NeoBattle {
     }
 
     public void finishBattle() {
-        // Called from EventListener
-        NeoConstants.LOGGER.info("Called finishBattle");
-        this.entity.kill();
-
-        // Give rewards?
+        if (!type.equals(NeoBattleType.PLAYER_V_PLAYER)) {
+            this.entity.kill();
+        }
     }
-
 }

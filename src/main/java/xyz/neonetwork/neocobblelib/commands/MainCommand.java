@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import de.markusbordihn.easynpc.commands.arguments.EntityTypeArgument;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -49,6 +50,13 @@ public class MainCommand {
                                 Commands.literal("randomtrainer")
                                         .requires(source -> source.hasPermission(2))
                                                 .executes(MainCommand::randomTrainerOption))
+                        .then(
+                                Commands.literal("player")
+                                        .requires(source -> source.hasPermission(2))
+                                                .then(Commands.argument("playerOne", EntityArgument.player())
+                                                .then(Commands.argument("playerTwo", EntityArgument.player())
+                                                        .executes(MainCommand::playerOption)))
+                        )
         );
     }
 
@@ -146,6 +154,26 @@ public class MainCommand {
 
         ServerPlayer sender = (ServerPlayer) extract[1];
         NeoBattle battle = BattleUtils.createBattleWithRandom(sender);
+
+        battle.startBattle();
+
+        return 1;
+    }
+
+    public static int playerOption(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Object[] extract = extractContext(context);
+
+        if (extract == null) {
+            return 0;
+        }
+
+        ServerPlayer sender = (ServerPlayer) extract[1];
+        ServerPlayer targetOne = EntityArgument.getPlayer(context, "playerOne");
+        ServerPlayer targetTwo = EntityArgument.getPlayer(context, "playerTwo");
+
+        sender.sendSystemMessage(Component.literal(String.format("Attempting to initiate Player V Player with %s and %s", targetOne.getDisplayName().getString(), targetTwo.getDisplayName().getString())));
+
+        NeoBattle battle = BattleUtils.createBattlePlayerVPlayer(targetOne, targetTwo);
 
         battle.startBattle();
 

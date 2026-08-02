@@ -1,8 +1,6 @@
 package xyz.neonetwork.neocobblelib.utils;
 
 import com.cobblemon.mod.common.entity.npc.NPCEntity;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import xyz.neonetwork.neocobblelib.NeoConstants;
 import xyz.neonetwork.neocobblelib.battles.NeoBattleType;
@@ -46,6 +44,14 @@ public class BattleUtils {
 
         return neoBattle;
 
+    }
+
+    public static NeoBattle createBattlePlayerVPlayer(ServerPlayer playerOne, ServerPlayer playerTwo) {
+        NeoBattle neoBattle = new NeoBattle(playerOne, NeoBattleType.PLAYER_V_PLAYER);
+
+        neoBattle.setPlayerTwo(playerTwo);
+
+        return neoBattle;
     }
 
     public static boolean isUUIDPlayer(UUID uuid) {
