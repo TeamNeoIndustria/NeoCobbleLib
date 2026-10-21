@@ -148,13 +148,13 @@ dependencies {
     implementation files("libs/Cobblemon-neoforge-${cobblemon_version}.jar")
 
     // EasyNPC
-    implementation files("libs/easy_npc-neoforge-${easynpc_version}.jar")
+    // implementation files("libs/easy_npc-neoforge-${easynpc_version}.jar")
 
     // KotlinForForge
     implementation files("libs/kotlinforforge-${kotlinforforge_version}.jar")
 
     // TBCS
-    implementation files("libs/tbcs-neoforge-${tbcs_version}.jar")
+    // implementation files("libs/tbcs-neoforge-${tbcs_version}.jar")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -169,8 +169,6 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             mod_name               : mod_name,
             mod_license            : mod_license,
             mod_version            : mod_version,
-            cobblemon_min_version      : cobblemon_min_version,
-            kotlinforforge_min_version : kotlinforforge_min_version,
     ]
     inputs.properties replaceProperties
     expand replaceProperties

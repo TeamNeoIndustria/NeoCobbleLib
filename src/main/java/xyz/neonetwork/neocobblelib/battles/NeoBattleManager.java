@@ -74,6 +74,10 @@ public class NeoBattleManager {
                 return true;
             }
 
+            if (battles.getOpponentPlayer() == null) {
+                continue;
+            }
+
             if (battles.getOpponentPlayer().getStringUUID().equals(player.getStringUUID())) {
                 return true;
             }

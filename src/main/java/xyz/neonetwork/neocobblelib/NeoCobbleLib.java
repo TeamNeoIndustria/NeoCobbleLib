@@ -10,7 +10,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import xyz.neonetwork.neocobblelib.battles.NeoBattle;
 import xyz.neonetwork.neocobblelib.battles.NeoBattleManager;
 import xyz.neonetwork.neocobblelib.cobblemon.CobblemonEventListener;
 import xyz.neonetwork.neocobblelib.cobblemon.CobblemonTrainerManager;

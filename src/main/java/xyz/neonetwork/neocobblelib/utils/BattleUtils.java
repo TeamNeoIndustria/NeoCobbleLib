@@ -3,10 +3,10 @@ package xyz.neonetwork.neocobblelib.utils;
 import com.cobblemon.mod.common.entity.npc.NPCEntity;
 import net.minecraft.server.level.ServerPlayer;
 import xyz.neonetwork.neocobblelib.NeoConstants;
-import xyz.neonetwork.neocobblelib.battles.NeoBattleType;
-import xyz.neonetwork.neocobblelib.cobblemon.CobblemonPresetTrainers;
 import xyz.neonetwork.neocobblelib.battles.NeoBattle;
+import xyz.neonetwork.neocobblelib.battles.NeoBattleType;
 import xyz.neonetwork.neocobblelib.battles.NeoNPCParty;
+import xyz.neonetwork.neocobblelib.cobblemon.CobblemonPresetTrainers;
 import xyz.neonetwork.neocobblelib.cobblemon.CobblemonUtils;
 
 import java.util.UUID;

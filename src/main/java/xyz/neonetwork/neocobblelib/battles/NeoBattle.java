@@ -2,7 +2,8 @@ package xyz.neonetwork.neocobblelib.battles;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
-import com.cobblemon.mod.common.battles.*;
+import com.cobblemon.mod.common.battles.BattleBuilder;
+import com.cobblemon.mod.common.battles.BattleStartResult;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.npc.NPCBattleActor;
 import com.cobblemon.mod.common.entity.npc.NPCEntity;
@@ -12,15 +13,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import xyz.neonetwork.neocobblelib.NeoConstants;
-import xyz.neonetwork.neocobblelib.cobblemon.CobblemonUtils;
-import xyz.neonetwork.neocobblelib.utils.BattleUtils;
 import xyz.neonetwork.neocobblelib.utils.NPCUtils;
 import xyz.neonetwork.neocobblelib.utils.TaskScheduler;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class NeoBattle {
     // Entities
