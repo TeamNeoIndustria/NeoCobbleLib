@@ -20,7 +20,9 @@ public class NPCUtils {
         npcEntity.teleportTo(level, position.getX(), position.getY(), position.getZ(), null, 0, 0);
         npcEntity.setCustomName(Component.literal("Trainer"));
 
-        NeoConstants.SERVER.getPlayerList().getPlayers().forEach(players -> players.level().addFreshEntity(npcEntity));
+        if (!level.addFreshEntity(npcEntity)) {
+            NeoConstants.LOGGER.error("Failed to add NPC entity to the level.");
+        }
 
         return npcEntity;
     }
@@ -34,7 +36,9 @@ public class NPCUtils {
         npcEntity.setParty(trainer.getParty().getAsNPCPartyStore(npcEntity));
         npcEntity.setCustomName(Component.literal(trainer.getName()).withStyle(trainer.getNameColour()));
 
-        NeoConstants.SERVER.getPlayerList().getPlayers().forEach(players -> players.level().addFreshEntity(npcEntity));
+        if (!level.addFreshEntity(npcEntity)) {
+            NeoConstants.LOGGER.error("Failed to add NPC entity to the level.");
+        }
 
         return npcEntity;
     }
@@ -51,6 +55,8 @@ public class NPCUtils {
     }
 
     public static void sendNPCToClient(NPCEntity entity) {
-        NeoConstants.SERVER.getPlayerList().getPlayers().forEach(players -> players.level().addFreshEntity(entity));
+        if (!entity.level().addFreshEntity(entity)) {
+            NeoConstants.LOGGER.error("Failed to add NPC entity to the level.");
+        }
     }
 }
