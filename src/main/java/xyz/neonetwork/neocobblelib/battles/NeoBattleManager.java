@@ -19,6 +19,10 @@ public class NeoBattleManager {
                     battle = battles;
                 }
 
+                if (battles.getOpponentPlayer() == null) {
+                    continue;
+                }
+
                 if (battles.getOpponentPlayer().getStringUUID().equals(player.getStringUUID())) {
                     battle = battles;
                 }

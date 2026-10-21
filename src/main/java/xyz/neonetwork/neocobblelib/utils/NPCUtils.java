@@ -49,7 +49,7 @@ public class NPCUtils {
 
         npcEntity.setNpc(NPCClasses.INSTANCE.getByName("standard"));
         npcEntity.finalizeSpawn(level, level.getCurrentDifficultyAt(position), MobSpawnType.COMMAND, null);
-        npcEntity.teleportTo(level, position.getX(), position.getY(), position.getY(), null, 0, 0);
+        npcEntity.teleportTo(level, position.getX(), position.getY(), position.getZ(), null, 0, 0);
         npcEntity.setCustomName(Component.literal("Trainer"));
 
         NeoConstants.SERVER.getPlayerList().getPlayers().forEach(players -> players.level().addFreshEntity(npcEntity));
