@@ -10,6 +10,9 @@ import net.minecraft.world.entity.MobSpawnType;
 import xyz.neonetwork.neocobblelib.NeoConstants;
 import xyz.neonetwork.neocobblelib.cobblemon.CobblemonPresetTrainers;
 
+import java.util.Optional;
+import java.util.function.Consumer;
+
 public class NPCUtils {
 
     public static NPCEntity createNPC(ServerLevel level, BlockPos position) {
@@ -52,6 +55,30 @@ public class NPCUtils {
         npcEntity.setCustomName(Component.literal("Randomizer!").withStyle(ChatFormatting.GOLD));
 
         return npcEntity;
+    }
+
+    public static Optional<NPCEntity> spawnTrainer(ServerLevel level, CobblemonPresetTrainers trainer,
+                                                   double x, double y, double z, float yaw,
+                                                   Consumer<NPCEntity> beforeSpawn) {
+        NPCEntity npc = new NPCEntity(level);
+
+        npc.setNpc(NPCClasses.INSTANCE.getByName("standard"));
+        npc.finalizeSpawn(level, level.getCurrentDifficultyAt(BlockPos.containing(x, y, z)), MobSpawnType.EVENT, null);
+        npc.moveTo(x, y, z, yaw, 0F);
+        npc.setYHeadRot(yaw);
+        npc.setYBodyRot(yaw);
+        npc.setParty(trainer.getParty().getAsNPCPartyStore(npc));
+        npc.setCustomName(Component.literal(trainer.getName()).withStyle(trainer.getNameColour()));
+        npc.setPersistenceRequired();
+
+        beforeSpawn.accept(npc);
+
+        if (!level.addFreshEntity(npc)) {
+            NeoConstants.LOGGER.error("Failed to add trainer {} at {}, {}, {}.", trainer.getName(), x, y, z);
+            return Optional.empty();
+        }
+
+        return Optional.of(npc);
     }
 
     public static void sendNPCToClient(NPCEntity entity) {
