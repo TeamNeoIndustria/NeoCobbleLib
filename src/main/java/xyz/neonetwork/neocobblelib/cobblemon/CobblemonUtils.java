@@ -13,7 +13,9 @@ import net.minecraft.world.entity.MobSpawnType;
 import xyz.neonetwork.neocobblelib.NeoConstants;
 import xyz.neonetwork.neocobblelib.battles.NeoNPCParty;
 
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Consumer;
 
 public class CobblemonUtils {
     public static Pokemon generateRandomPokemon(int lowerLevel, int higherLevel) {
@@ -37,8 +39,9 @@ public class CobblemonUtils {
         return PokemonProperties.Companion.parse(toParse).create();
     }
 
-    public static void spawnPokemonAtLocation(Pokemon pokemon, ServerLevel level, BlockPos position) {
-        PokemonEntity entity = PokemonProperties.Companion.parse(String.format("species=%s level=%s nature=%s", pokemon.getSpecies().getName(), pokemon.getLevel(), pokemon.getNature().getDisplayName().split("\\.")[2])).createEntity(level);
+    public static PokemonEntity spawnPokemonAtLocation(Pokemon pokemon, ServerLevel level, BlockPos position) {
+        String toParse = String.format("species=%s level=%s nature=%s", pokemon.getSpecies().getName(), pokemon.getLevel(), pokemon.getNature().getDisplayName().split("\\.")[2]);
+        PokemonEntity entity = PokemonProperties.Companion.parse(toParse).createEntity(level);
 
         entity.moveTo(position.getX(), position.getY(), position.getZ(), entity.yRotO, entity.xRotO);
         entity.finalizeSpawn(level, level.getCurrentDifficultyAt(position), MobSpawnType.COMMAND, null);
@@ -46,6 +49,28 @@ public class CobblemonUtils {
         if (!level.addFreshEntity(entity)) {
             NeoConstants.LOGGER.error("Error spawning Pokemon");
         }
+
+        return entity;
+    }
+
+    public static Optional<PokemonEntity> spawnWildPokemon(ServerLevel level, CobblemonSpecies species, int pokemonLevel,
+                                                           double x, double y, double z,
+                                                           Consumer<PokemonEntity> beforeSpawn) {
+        String toParse = String.format("species=%s, level=%s", species.getName(), pokemonLevel);
+        PokemonEntity entity = PokemonProperties.Companion.parse(toParse).createEntity(level);
+
+        entity.moveTo(x, y, z, 0F, 0F);
+        entity.finalizeSpawn(level, level.getCurrentDifficultyAt(entity.blockPosition()), MobSpawnType.EVENT, null);
+        entity.setPersistenceRequired();
+
+        beforeSpawn.accept(entity);
+
+        if (!level.addFreshEntity(entity)) {
+            NeoConstants.LOGGER.error("Failed to add {} to the world at {}, {}, {}.", species.getName(), x, y, z);
+            return Optional.empty();
+        }
+
+        return Optional.of(entity);
     }
 
     public static void setPlayerPartySlot(ServerPlayer player, int slot, Pokemon pokemon) {
